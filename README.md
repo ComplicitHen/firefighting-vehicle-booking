@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Firefighting Vehicle Booking System
+
+A web application for managing vehicle bookings for firefighting squads. Built with Next.js, TypeScript, Tailwind CSS, and Supabase.
+
+## Features
+
+- **User Authentication**: Secure login and signup for squad members
+- **Calendar View**: Visual calendar showing all vehicle bookings
+- **Two Vehicle Types**: Manage bookings for big fire truck and small errands vehicle
+- **Conflict Prevention**: Automatic detection of booking conflicts
+- **Booking Management**: Create, view, and cancel bookings
+- **Purpose & Notes**: Add detailed information about each booking
+- **Real-time Updates**: See all squad bookings in real-time
 
 ## Getting Started
 
-First, run the development server:
+### 1. Prerequisites
+
+- Node.js 18+ installed
+- A Supabase account (free tier works fine)
+
+### 2. Set Up Supabase
+
+1. Create a new project at [https://supabase.com](https://supabase.com)
+2. Follow the instructions in `SUPABASE_SETUP.md` to:
+   - Create the database tables
+   - Enable authentication
+   - Get your API keys
+
+### 3. Configure Environment Variables
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+
+2. Edit `.env.local` and add your Supabase credentials:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your-project-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   ```
+
+### 4. Install Dependencies
+
+```bash
+npm install
+```
+
+### 5. Run the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### First Time Setup
 
-## Learn More
+1. Navigate to the auth page and create an account
+2. All squad members should create their accounts
+3. Start booking vehicles!
 
-To learn more about Next.js, take a look at the following resources:
+### Creating a Booking
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Click "New Booking" button
+2. Select vehicle type (big or small)
+3. Choose start and end times
+4. Enter the purpose of the booking
+5. Optionally add notes
+6. The system will warn you if there are conflicts
+7. Submit the booking
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Viewing Bookings
 
-## Deploy on Vercel
+- **Calendar View**: See all bookings on a visual calendar
+  - Red = Big vehicle bookings
+  - Blue = Small vehicle bookings
+- **List View**: See upcoming bookings with details
+- Click on calendar dates to quickly create bookings
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Managing Your Bookings
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- You can only cancel your own bookings
+- Click the "Cancel" button on any of your bookings
+- Cancelled bookings are removed from the calendar
+
+## Project Structure
+
+```
+firefighting-vehicle-booking/
+├── app/
+│   ├── auth/              # Authentication pages
+│   ├── page.tsx           # Main dashboard (protected)
+│   ├── layout.tsx         # Root layout
+│   └── globals.css        # Global styles
+├── components/
+│   ├── BookingDashboard.tsx   # Main dashboard component
+│   ├── BookingForm.tsx        # Booking creation form
+│   ├── BookingCalendar.tsx    # Calendar view
+│   └── BookingList.tsx        # Booking list view
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts      # Client-side Supabase
+│   │   └── server.ts      # Server-side Supabase
+│   └── types/
+│       └── database.ts    # TypeScript types
+├── middleware.ts          # Auth middleware
+└── SUPABASE_SETUP.md     # Database setup guide
+```
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Calendar**: react-big-calendar
+- **Date Handling**: date-fns
+
+## Deployment
+
+### Deploy to Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import the project in Vercel
+3. Add your environment variables in the Vercel dashboard
+4. Deploy!
+
+### Environment Variables for Production
+
+Make sure to add these in your hosting platform:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+## Contributing
+
+This is a custom application for your firefighting squad. Feel free to modify and extend it as needed!
+
+## Support
+
+For issues or questions, check the code comments or the Supabase documentation at [https://supabase.com/docs](https://supabase.com/docs).
