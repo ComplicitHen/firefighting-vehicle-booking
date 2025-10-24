@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function BookingForm({ userId, onSuccess, onCancel, selectedDate }: Props) {
-  const [vehicleType, setVehicleType] = useState<VehicleType>('big')
+  const [vehicleType, setVehicleType] = useState<VehicleType>('small')
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
   const [purpose, setPurpose] = useState('')
@@ -83,7 +83,7 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
     setError('')
 
     if (conflicts.length > 0) {
-      setError('Cannot create booking: time slot conflicts with existing booking')
+      setError('Kan inte skapa bokning: tidslucka överlappar med befintlig bokning')
       setLoading(false)
       return
     }
@@ -110,55 +110,53 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-xl font-semibold mb-4">Create New Booking</h3>
+      <h3 className="text-xl font-bold text-gray-900 mb-4">Skapa ny bokning</h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Vehicle
+          <label className="block text-sm font-bold text-gray-900 mb-1">
+            Fordon
           </label>
-          <select
-            value={vehicleType}
-            onChange={(e) => setVehicleType(e.target.value as VehicleType)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500"
-          >
-            <option value="big">Big Vehicle (Main Fire Truck)</option>
-            <option value="small">Small Vehicle (Errands)</option>
-          </select>
+          <div className="w-full px-4 py-3 border-2 border-gray-300 rounded-md bg-gray-50">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🚐</span>
+              <span className="text-lg font-semibold text-gray-900">6570 Lillebilen</span>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Start Time
+            <label className="block text-sm font-bold text-gray-900 mb-1">
+              Starttid
             </label>
             <input
               type="datetime-local"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500"
+              className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              End Time
+            <label className="block text-sm font-bold text-gray-900 mb-1">
+              Sluttid
             </label>
             <input
               type="datetime-local"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500"
+              className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900"
             />
           </div>
         </div>
 
         {conflicts.length > 0 && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-3">
-            <p className="text-sm font-medium text-red-800 mb-1">Conflicts detected:</p>
-            <ul className="text-sm text-red-700 list-disc list-inside">
+          <div className="bg-red-50 border-2 border-red-400 rounded-md p-3">
+            <p className="text-sm font-bold text-red-900 mb-1">Konflikter upptäckta:</p>
+            <ul className="text-sm font-medium text-red-800 list-disc list-inside">
               {conflicts.map((conflict, index) => (
                 <li key={index}>{conflict}</li>
               ))}
@@ -167,34 +165,34 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Purpose *
+          <label className="block text-sm font-bold text-gray-900 mb-1">
+            Syfte *
           </label>
           <input
             type="text"
             value={purpose}
             onChange={(e) => setPurpose(e.target.value)}
             required
-            placeholder="e.g., Training, Emergency drill, Equipment pickup"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500"
+            placeholder="t.ex. Utbildning, Övning, Hämta utrustning"
+            className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900 placeholder-gray-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Notes (Optional)
+          <label className="block text-sm font-bold text-gray-900 mb-1">
+            Anteckningar (Valfritt)
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
-            placeholder="Additional information..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500"
+            placeholder="Ytterligare information..."
+            className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900 placeholder-gray-500"
           />
         </div>
 
         {error && (
-          <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+          <div className="text-sm font-bold text-red-900 bg-red-100 p-3 rounded-md border-2 border-red-400">
             {error}
           </div>
         )}
@@ -203,16 +201,16 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
           <button
             type="submit"
             disabled={loading || conflicts.length > 0}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-base"
           >
-            {loading ? 'Creating...' : 'Create Booking'}
+            {loading ? 'Skapar...' : 'Skapa bokning'}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+            className="px-4 py-3 bg-gray-300 text-gray-900 font-bold rounded-md hover:bg-gray-400 text-base"
           >
-            Cancel
+            Avbryt
           </button>
         </div>
       </form>
