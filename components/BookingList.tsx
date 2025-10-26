@@ -7,11 +7,12 @@ import { sv } from 'date-fns/locale'
 
 interface Props {
   bookings: Booking[]
-  currentUserId: string
+  currentUserId: string | null
+  currentUserSignage?: string | null
   onBookingUpdated: () => void
 }
 
-export default function BookingList({ bookings, currentUserId, onBookingUpdated }: Props) {
+export default function BookingList({ bookings, currentUserId, currentUserSignage, onBookingUpdated }: Props) {
   const supabase = createClient()
 
   const handleCancelBooking = async (bookingId: string) => {
@@ -47,7 +48,9 @@ export default function BookingList({ bookings, currentUserId, onBookingUpdated 
   return (
     <div className="space-y-4">
       {upcomingBookings.map((booking) => {
-        const isOwner = booking.user_id === currentUserId
+        const isOwner =
+          (currentUserId && booking.user_id === currentUserId) ||
+          (currentUserSignage && booking.signage === currentUserSignage)
         const startDate = new Date(booking.start_time)
         const endDate = new Date(booking.end_time)
 
@@ -71,6 +74,12 @@ export default function BookingList({ bookings, currentUserId, onBookingUpdated 
                 </div>
 
                 <div className="space-y-1 text-sm text-gray-900">
+                  {booking.signage && (
+                    <p>
+                      <span className="font-bold">Signering:</span>{' '}
+                      <span className="font-medium">{booking.signage}</span>
+                    </p>
+                  )}
                   <p>
                     <span className="font-bold">Start:</span>{' '}
                     <span className="font-medium">{format(startDate, 'PPP p', { locale: sv })}</span>

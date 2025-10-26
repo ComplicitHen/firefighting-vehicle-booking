@@ -3,12 +3,13 @@
 import { createServiceClient } from '@/lib/supabase/service'
 
 export async function createBooking(data: {
-  user_id: string
+  user_id: string | null
   vehicle_type: 'big' | 'small'
   start_time: string
   end_time: string
   purpose: string
   notes?: string | null
+  signage?: string | null
 }) {
   // Use service client to bypass RLS for code-based auth users
   const supabase = createServiceClient()
@@ -23,6 +24,7 @@ export async function createBooking(data: {
         end_time: data.end_time,
         purpose: data.purpose,
         notes: data.notes,
+        signage: data.signage,
         status: 'active',
       })
       .select()

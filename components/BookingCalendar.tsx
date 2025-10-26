@@ -29,7 +29,9 @@ export default function BookingCalendar({ bookings, onDateSelect }: Props) {
 
   const events: CalendarEvent[] = bookings.map((booking) => ({
     id: booking.id,
-    title: `🚐 6570 Lillebilen - ${booking.purpose}`,
+    title: booking.signage
+      ? `🚐 6570 Lillebilen (${booking.signage}) - ${booking.purpose}`
+      : `🚐 6570 Lillebilen - ${booking.purpose}`,
     start: new Date(booking.start_time),
     end: new Date(booking.end_time),
     resource: booking,

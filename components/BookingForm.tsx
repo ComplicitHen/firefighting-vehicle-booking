@@ -6,13 +6,14 @@ import { VehicleType } from '@/lib/types/database'
 import { createBooking } from '@/app/actions/bookings'
 
 interface Props {
-  userId: string
+  userId: string | null
+  signage: string | null
   onSuccess: () => void
   onCancel: () => void
   selectedDate?: Date | null
 }
 
-export default function BookingForm({ userId, onSuccess, onCancel, selectedDate }: Props) {
+export default function BookingForm({ userId, signage, onSuccess, onCancel, selectedDate }: Props) {
   const [vehicleType] = useState<VehicleType>('small')
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
@@ -98,6 +99,7 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
         end_time: endTime,
         purpose,
         notes: notes || null,
+        signage: signage,
       })
 
       if (!result.success) {

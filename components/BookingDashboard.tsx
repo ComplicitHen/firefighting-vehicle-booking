@@ -104,7 +104,8 @@ export default function BookingDashboard({ user, codeAuth }: Props) {
       {showForm && (
         <div className="mb-8">
           <BookingForm
-            userId={user.id}
+            userId={codeAuth ? null : user.id}
+            signage={codeAuth?.signage || null}
             onSuccess={handleBookingCreated}
             onCancel={() => {
               setShowForm(false)
@@ -128,7 +129,8 @@ export default function BookingDashboard({ user, codeAuth }: Props) {
           <h2 className="text-xl font-bold text-gray-900 mb-4">Kommande bokningar</h2>
           <BookingList
             bookings={bookings}
-            currentUserId={user.id}
+            currentUserId={codeAuth ? null : user.id}
+            currentUserSignage={codeAuth?.signage}
             onBookingUpdated={fetchBookings}
           />
         </div>
