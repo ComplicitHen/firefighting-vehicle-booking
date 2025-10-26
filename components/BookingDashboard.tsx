@@ -24,6 +24,7 @@ export default function BookingDashboard({ user, codeAuth }: Props) {
 
   useEffect(() => {
     fetchBookings()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchBookings = async () => {
@@ -76,24 +77,24 @@ export default function BookingDashboard({ user, codeAuth }: Props) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Fordonsbokningssystem</h1>
           <p className="text-base font-bold text-gray-900 mt-1">
             Inloggad som {codeAuth ? `Signering: ${codeAuth.signage}` : user.email}
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-3 w-full sm:w-auto">
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-5 py-3 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 text-base"
+            className="flex-1 sm:flex-none px-5 py-3 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 text-base whitespace-nowrap"
           >
             {showForm ? 'Avbryt' : 'Ny bokning'}
           </button>
           <button
             onClick={handleSignOut}
-            className="px-5 py-3 bg-gray-700 text-white font-bold rounded-md hover:bg-gray-800 text-base"
+            className="flex-1 sm:flex-none px-5 py-3 bg-gray-700 text-white font-bold rounded-md hover:bg-gray-800 text-base whitespace-nowrap"
           >
             Logga ut
           </button>
@@ -114,8 +115,8 @@ export default function BookingDashboard({ user, codeAuth }: Props) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="w-full">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Kalendervy</h2>
           <BookingCalendar
             bookings={bookings}
@@ -123,7 +124,7 @@ export default function BookingDashboard({ user, codeAuth }: Props) {
           />
         </div>
 
-        <div>
+        <div className="w-full">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Kommande bokningar</h2>
           <BookingList
             bookings={bookings}

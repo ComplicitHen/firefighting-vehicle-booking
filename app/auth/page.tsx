@@ -19,6 +19,7 @@ export default function AuthPage() {
   const [step, setStep] = useState<'code' | 'signage'>('code')
   const [code, setCode] = useState('')
   const [selectedSignage, setSelectedSignage] = useState('')
+  const [customSignage, setCustomSignage] = useState('')
   const [error, setError] = useState('')
 
   const router = useRouter()
@@ -46,8 +47,9 @@ export default function AuthPage() {
         router.push('/')
         router.refresh()
       }
-    } catch (error: any) {
-      setMessage(error.message)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred'
+      setMessage(message)
     } finally {
       setLoading(false)
     }
@@ -68,13 +70,16 @@ export default function AuthPage() {
     e.preventDefault()
     setError('')
 
-    if (!selectedSignage) {
-      setError('Vänligen välj en signering.')
+    // Use custom signage if provided, otherwise use selected signage
+    const finalSignage = customSignage.trim() || selectedSignage
+
+    if (!finalSignage) {
+      setError('Vänligen välj eller skriv in en signering.')
       return
     }
 
     // Store signage in localStorage
-    localStorage.setItem('userSignage', selectedSignage)
+    localStorage.setItem('userSignage', finalSignage)
     localStorage.setItem('isAuthenticated', 'true')
 
     router.push('/')
@@ -84,14 +89,14 @@ export default function AuthPage() {
   // Signage selection view (code-based auth step 2)
   if (authMethod === 'code' && step === 'signage') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 p-6 sm:p-8 bg-white rounded-lg shadow-md">
           <div>
             <h2 className="text-center text-3xl font-bold text-gray-900">
               Välj din signering
             </h2>
             <p className="mt-2 text-center text-base font-bold text-gray-900">
-              Välj vilken signering du vill använda
+              Välj en förvald signering eller skriv in din egen
             </p>
           </div>
 
@@ -101,7 +106,7 @@ export default function AuthPage() {
                 <label
                   key={signage}
                   className={`block p-4 border-2 rounded-md cursor-pointer transition-colors ${
-                    selectedSignage === signage
+                    selectedSignage === signage && !customSignage
                       ? 'border-red-600 bg-red-100'
                       : 'border-gray-400 hover:border-red-400 bg-white'
                   }`}
@@ -110,13 +115,38 @@ export default function AuthPage() {
                     type="radio"
                     name="signage"
                     value={signage}
-                    checked={selectedSignage === signage}
-                    onChange={(e) => setSelectedSignage(e.target.value)}
+                    checked={selectedSignage === signage && !customSignage}
+                    onChange={(e) => {
+                      setSelectedSignage(e.target.value)
+                      setCustomSignage('')
+                    }}
                     className="sr-only"
                   />
                   <span className="text-lg font-bold text-gray-900">{signage}</span>
                 </label>
               ))}
+            </div>
+
+            <div className="pt-2">
+              <label htmlFor="customSignage" className="block text-sm font-bold text-gray-900 mb-2">
+                Eller skriv in din egen signering:
+              </label>
+              <input
+                id="customSignage"
+                name="customSignage"
+                type="text"
+                className={`block w-full px-4 py-3 border-2 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900 font-bold ${
+                  customSignage ? 'border-red-600 bg-red-50' : 'border-gray-300'
+                }`}
+                value={customSignage}
+                onChange={(e) => {
+                  setCustomSignage(e.target.value)
+                  if (e.target.value) {
+                    setSelectedSignage('')
+                  }
+                }}
+                placeholder="T.ex. ABC123"
+              />
             </div>
 
             {error && (
@@ -147,8 +177,8 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 p-6 sm:p-8 bg-white rounded-lg shadow-md">
         <div>
           <h2 className="text-center text-3xl font-bold text-gray-900">
             Fordonsbokningssystem

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { VehicleType } from '@/lib/types/database'
+import { createBooking } from '@/app/actions/bookings'
 
 interface Props {
   userId: string
@@ -12,7 +13,7 @@ interface Props {
 }
 
 export default function BookingForm({ userId, onSuccess, onCancel, selectedDate }: Props) {
-  const [vehicleType, setVehicleType] = useState<VehicleType>('small')
+  const [vehicleType] = useState<VehicleType>('small')
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
   const [purpose, setPurpose] = useState('')
@@ -34,6 +35,7 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
     if (startTime && endTime && vehicleType) {
       checkConflicts()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startTime, endTime, vehicleType])
 
   const checkConflicts = async () => {
@@ -89,7 +91,7 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
     }
 
     try {
-      const { error } = await supabase.from('bookings').insert({
+      const result = await createBooking({
         user_id: userId,
         vehicle_type: vehicleType,
         start_time: startTime,
@@ -98,23 +100,26 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
         notes: notes || null,
       })
 
-      if (error) throw error
+      if (!result.success) {
+        throw new Error(result.error || 'Kunde inte skapa bokning')
+      }
 
       onSuccess()
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred'
+      setError(message)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-xl font-bold text-gray-900 mb-4">Skapa ny bokning</h3>
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+      <h3 className="text-xl font-bold text-gray-900 mb-6">Skapa ny bokning</h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-bold text-gray-900 mb-1">
+          <label className="block text-sm font-bold text-gray-900 mb-2">
             Fordon
           </label>
           <div className="w-full px-4 py-3 border-2 border-gray-300 rounded-md bg-gray-50">
@@ -125,9 +130,9 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-1">
+            <label className="block text-sm font-bold text-gray-900 mb-2">
               Starttid
             </label>
             <input
@@ -135,12 +140,15 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
               required
-              className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900"
+              className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900 font-medium"
+              style={{
+                colorScheme: 'light',
+              }}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-1">
+            <label className="block text-sm font-bold text-gray-900 mb-2">
               Sluttid
             </label>
             <input
@@ -148,7 +156,10 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
               required
-              className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900"
+              className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 text-gray-900 font-medium"
+              style={{
+                colorScheme: 'light',
+              }}
             />
           </div>
         </div>
@@ -165,7 +176,7 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
         )}
 
         <div>
-          <label className="block text-sm font-bold text-gray-900 mb-1">
+          <label className="block text-sm font-bold text-gray-900 mb-2">
             Syfte *
           </label>
           <input
@@ -179,7 +190,7 @@ export default function BookingForm({ userId, onSuccess, onCancel, selectedDate 
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-900 mb-1">
+          <label className="block text-sm font-bold text-gray-900 mb-2">
             Anteckningar (Valfritt)
           </label>
           <textarea

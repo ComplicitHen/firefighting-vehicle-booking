@@ -35,7 +35,23 @@ export default function BookingCalendar({ bookings, onDateSelect }: Props) {
     resource: booking,
   }))
 
-  const eventStyleGetter = (event: CalendarEvent) => {
+  const messages = {
+    allDay: 'Heldag',
+    previous: 'Föregående',
+    next: 'Nästa',
+    today: 'Idag',
+    month: 'Månad',
+    week: 'Vecka',
+    day: 'Dag',
+    agenda: 'Agenda',
+    date: 'Datum',
+    time: 'Tid',
+    event: 'Händelse',
+    noEventsInRange: 'Inga bokningar i detta datumintervall',
+    showMore: (total: number) => `+ ${total} till`,
+  }
+
+  const eventStyleGetter = (_event: CalendarEvent) => {
     return {
       style: {
         backgroundColor: '#2563eb',
@@ -54,10 +70,15 @@ export default function BookingCalendar({ bookings, onDateSelect }: Props) {
   }
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
       <style jsx global>{`
         .rbc-calendar {
-          min-height: 600px;
+          min-height: 500px;
+        }
+        @media (min-width: 640px) {
+          .rbc-calendar {
+            min-height: 600px;
+          }
         }
         .rbc-header {
           padding: 10px 3px;
@@ -110,6 +131,11 @@ export default function BookingCalendar({ bookings, onDateSelect }: Props) {
         onSelectSlot={handleSelectSlot}
         selectable
         popup
+        messages={messages}
+        views={['month', 'week', 'day', 'agenda']}
+        step={30}
+        showMultiDayTimes
+        defaultDate={new Date()}
         tooltipAccessor={(event) =>
           `${event.title}\n${moment(event.start).format('LLL')} - ${moment(event.end).format('LT')}`
         }
